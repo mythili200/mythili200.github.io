@@ -1,17 +1,16 @@
 .profile-pic {
   position: relative;
-  max-width:130px;
-  max-height:130px;
+  max-width: 130px;
+  max-height: 130px;
   width: auto;
   height: auto;
   overflow: hidden;
   /* display: inline-block; */
-  
-  
+
   /* background-size: cover;  */
-  margin: -31px; 
-  margin-left:-7px;
-  border: 6px solid rgba(0, 77, 64, 0.4); 
+  margin: -31px;
+  margin-left: -7px;
+  border: 6px solid rgb(155, 39, 176, 0.5);
   border-radius: 50% !important;
 }
 
@@ -24,7 +23,7 @@
   /* visibility: hidden; */
   position: fixed;
   /* margin-inline-end: auto;  */
-  bottom: 0; 
+  bottom: 0;
   right: 0;
 }
 
@@ -41,7 +40,7 @@
   width: 50px;
   height: 50px;
   border: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   font-size: 30px;
   line-height: 70px;
@@ -55,7 +54,7 @@
 }
 
 .linkedin {
-  color: #0077b5;
+  color: #f25aef;
 }
 
 .angellist {
@@ -63,12 +62,12 @@
 }
 
 .icon-btn:hover {
-  transform: scale(1.10);
-  color: #FFFFFF;
+  transform: scale(1.1);
+  color: #ffffff;
 }
 
 .linkedin:hover {
-  background-color: #0077b5;
+  background-color: #f25aef;
 }
 
 .angellist:hover {
@@ -85,7 +84,7 @@
   position: relative;
   padding: 11px 35px;
   background: #fff;
-  color: #00796b;
+  color: #f25aef;
   border: 2px solid #fff;
   font-weight: 600;
   font-size: 15px;
@@ -115,8 +114,8 @@
   -webkit-border-radius: 5px;
 }
 
-.contactme:hover{
-  color: #00796b;
+.contactme:hover {
+  color: #f25aef;
   background-color: white;
 }
 /* main body */
@@ -220,11 +219,13 @@ dt {
 }
 
 ul.side-nav {
-  width: 190px;
+  width: 220px;
 }
 
 ul.side-nav li {
   padding: 0;
+  margin: 10;
+  margin-bottom: 40;
 }
 
 /* ul.side-nav.fixed a {
@@ -243,7 +244,8 @@ ul.side-nav.fixed a {
   padding: 10px 0 12px;
 }
 
-ul.table-of-contents li.logo a.active, ul.table-of-contents li.logo a:hover {
+ul.table-of-contents li.logo a.active,
+ul.table-of-contents li.logo a:hover {
   border: none;
   font-weight: 200;
 }
@@ -269,12 +271,14 @@ ul.side-nav.fixed li.logo a {
   line-height: 100%;
 }
 
-ul.table-of-contents li:not(.logo) a.active, ul.table-of-contents li:not(.logo) a:hover {
+ul.table-of-contents li:not(.logo) a.active,
+ul.table-of-contents li:not(.logo) a:hover {
   background-color: #fafafa;
   border-left: 3px solid;
 }
 
-ul.side-nav.fixed.table-of-contents li:not(.logo) a span, ul#slide-out li:not(.logo) a span {
+ul.side-nav.fixed.table-of-contents li:not(.logo) a span,
+ul#slide-out li:not(.logo) a span {
   color: #333 !important;
 }
 
@@ -320,7 +324,7 @@ h3 {
 } */
 
 #intro.section {
-  background: #a7ffeb repeat;
+  background: #f25aef repeat;
   position: relative;
 }
 
@@ -344,7 +348,7 @@ h3 {
   /* font-weight: 400; */
   line-height: 150%;
   /* padding: 0 0px; */
-  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 5px rgba(63, 183, 243, 0.9);
 }
 
 #intro.section .underline {
@@ -367,7 +371,7 @@ h3 {
 .waves-effect.waves-blue .waves-ripple {
   /* The alpha value allows the text and background color
    of the button to still show through. */
-  background-color: rgba(33, 150, 243, 0.2);
+  background-color: rgba(47, 230, 120, 0.2);
 }
 
 .card {
@@ -394,6 +398,9 @@ h3 {
 
 .card .card-content {
   padding-bottom: 30px;
+}
+.purple-icon {
+  color: #9c27b0; /* Deep purple */
 }
 
 .card .card-content p {
@@ -559,7 +566,7 @@ small {
 /* .teal */
 
 .teal {
-  background-color: #008073 !important;
+  background-color: #ee92ec !important;
 }
 
 /* .teal {
@@ -601,7 +608,8 @@ small {
     height: 64px;
     position: absolute;
   }
-  nav a.button-collapse, nav a.button-collapse i {
+  nav a.button-collapse,
+  nav a.button-collapse i {
     color: #009688;
     height: 56px;
     line-height: 56px;
@@ -627,7 +635,8 @@ small {
     width: 100%;
     position: absolute;
   }
-  .name-title>span, .name-title>a {
+  .name-title > span,
+  .name-title > a {
     position: relative;
     line-height: 20px;
   }
@@ -639,7 +648,8 @@ small {
     display: block;
     font-size: 14px;
   }
-  h3, .container {
+  h3,
+  .container {
     position: relative;
     top: 64px;
   }
