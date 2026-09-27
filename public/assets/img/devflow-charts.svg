@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0F14"/>
+      <stop offset="100%" stop-color="#10161D"/>
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Top App Navigation Bar -->
+  <rect x="0" y="0" width="1200" height="60" fill="#10161D" stroke="#26313D" stroke-width="1"/>
+  <rect x="24" y="14" width="32" height="32" rx="8" fill="#6366F1"/>
+  <text x="33" y="36" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="bold">D</text>
+  <text x="68" y="36" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700">DevFlow</text>
+  <text x="135" y="36" fill="#64748B" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12">/ Engineering Dashboard</text>
+
+  <rect x="960" y="14" width="100" height="32" rx="6" fill="#151C24" stroke="#26313D"/>
+  <text x="980" y="34" fill="#94A3B8" font-family="sans-serif" font-size="12">Live Sync</text>
+  <circle cx="1040" cy="30" r="4" fill="#10B981"/>
+
+  <circle cx="1145" cy="30" r="16" fill="#6366F1" fill-opacity="0.2"/>
+  <text x="1140" y="35" fill="#818CF8" font-family="sans-serif" font-size="13" font-weight="bold">M</text>
+
+  <!-- Metric Cards Row -->
+  <g transform="translate(24, 80)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="16" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Total Projects</text>
+    <text x="16" y="58" fill="#FFFFFF" font-family="sans-serif" font-size="24" font-weight="bold">4</text>
+    <text x="16" y="76" fill="#10B981" font-family="sans-serif" font-size="10">3 active · 1 completed</text>
+
+    <!-- Card 2 -->
+    <rect x="194" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="210" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Open Issues</text>
+    <text x="210" y="58" fill="#60A5FA" font-family="sans-serif" font-size="24" font-weight="bold">14</text>
+    <text x="210" y="76" fill="#94A3B8" font-family="sans-serif" font-size="10">Tracked in sprint</text>
+
+    <!-- Card 3 -->
+    <rect x="388" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="404" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Resolved &amp; Closed</text>
+    <text x="404" y="58" fill="#10B981" font-family="sans-serif" font-size="24" font-weight="bold">6</text>
+    <text x="404" y="76" fill="#10B981" font-family="sans-serif" font-size="10">30% completion rate</text>
+
+    <!-- Card 4 -->
+    <rect x="582" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="598" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Avg Milestone Progress</text>
+    <text x="598" y="58" fill="#38BDF8" font-family="sans-serif" font-size="24" font-weight="bold">52%</text>
+    <rect x="598" y="68" width="145" height="5" rx="2.5" fill="#151C24"/>
+    <rect x="598" y="68" width="75" height="5" rx="2.5" fill="#38BDF8"/>
+
+    <!-- Card 5 -->
+    <rect x="776" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="792" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Delivery Status</text>
+    <text x="792" y="58" fill="#34D399" font-family="sans-serif" font-size="24" font-weight="bold">Healthy</text>
+    <text x="792" y="76" fill="#94A3B8" font-family="sans-serif" font-size="10">Zero overdue blockers</text>
+
+    <!-- Card 6 -->
+    <rect x="970" y="0" width="180" height="90" rx="10" fill="#10161D" stroke="#26313D"/>
+    <text x="986" y="26" fill="#94A3B8" font-family="sans-serif" font-size="11">Team Contributors</text>
+    <text x="986" y="58" fill="#A78BFA" font-family="sans-serif" font-size="24" font-weight="bold">4</text>
+    <text x="986" y="76" fill="#94A3B8" font-family="sans-serif" font-size="10">Admin, PM, Dev, QA</text>
+  </g>
+
+  <!-- Left Main Chart: Delivery Velocity & Sprint Burndown -->
+  <g transform="translate(24, 190)">
+    <rect x="0" y="0" width="700" height="480" rx="12" fill="#10161D" stroke="#26313D"/>
+    <text x="24" y="36" fill="#F8FAFC" font-family="sans-serif" font-size="16" font-weight="600">Delivery Velocity &amp; Sprint Burndown</text>
+    <text x="24" y="56" fill="#64748B" font-family="sans-serif" font-size="12">Throughput of created vs completed engineering points (Past 7 Days)</text>
+
+    <!-- Legend -->
+    <circle cx="530" cy="36" r="4" fill="#6366F1"/>
+    <text x="540" y="40" fill="#94A3B8" font-family="sans-serif" font-size="11">Created</text>
+    <circle cx="610" cy="36" r="4" fill="#10B981"/>
+    <text x="620" y="40" fill="#94A3B8" font-family="sans-serif" font-size="11">Completed</text>
+
+    <!-- Grid lines -->
+    <line x1="50" y1="120" x2="660" y2="120" stroke="#1C2631" stroke-dasharray="3 3"/>
+    <line x1="50" y1="200" x2="660" y2="200" stroke="#1C2631" stroke-dasharray="3 3"/>
+    <line x1="50" y1="280" x2="660" y2="280" stroke="#1C2631" stroke-dasharray="3 3"/>
+    <line x1="50" y1="360" x2="660" y2="360" stroke="#1C2631" stroke-dasharray="3 3"/>
+    <line x1="50" y1="420" x2="660" y2="420" stroke="#26313D"/>
+
+    <!-- Y Axis Labels -->
+    <text x="35" y="124" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="end">12</text>
+    <text x="35" y="204" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="end">8</text>
+    <text x="35" y="284" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="end">4</text>
+    <text x="35" y="364" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="end">2</text>
+    <text x="35" y="424" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="end">0</text>
+
+    <!-- Area chart - Created -->
+    <path d="M 60 380 Q 150 320, 250 250 T 400 180 T 520 220 T 640 140 L 640 420 L 60 420 Z" fill="url(#indigoGrad)"/>
+    <path d="M 60 380 Q 150 320, 250 250 T 400 180 T 520 220 T 640 140" fill="none" stroke="#6366F1" stroke-width="3"/>
+
+    <!-- Area chart - Completed -->
+    <path d="M 60 400 Q 150 360, 250 300 T 400 240 T 520 200 T 640 170 L 640 420 L 60 420 Z" fill="url(#emeraldGrad)"/>
+    <path d="M 60 400 Q 150 360, 250 300 T 400 240 T 520 200 T 640 170" fill="none" stroke="#10B981" stroke-width="3"/>
+
+    <!-- Data points -->
+    <circle cx="250" cy="250" r="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="400" cy="180" r="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="140" r="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
+
+    <circle cx="250" cy="300" r="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="400" cy="240" r="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="170" r="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- X Axis Labels -->
+    <text x="60" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Mon, 9/21</text>
+    <text x="155" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Tue, 9/22</text>
+    <text x="250" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Wed, 9/23</text>
+    <text x="345" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Thu, 9/24</text>
+    <text x="440" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Fri, 9/25</text>
+    <text x="535" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Sat, 9/26</text>
+    <text x="630" y="445" fill="#64748B" font-family="sans-serif" font-size="11" text-anchor="middle">Sun, 9/27</text>
+  </g>
+
+  <!-- Right Chart: Issues by Priority (Enhanced Donut) -->
+  <g transform="translate(744, 190)">
+    <rect x="0" y="0" width="432" height="480" rx="12" fill="#10161D" stroke="#26313D"/>
+    <text x="24" y="36" fill="#F8FAFC" font-family="sans-serif" font-size="16" font-weight="600">Issues by Priority</text>
+    <text x="24" y="56" fill="#64748B" font-family="sans-serif" font-size="12">Risk distribution across 20 active backlog items</text>
+
+    <!-- Donut Chart Graphics -->
+    <g transform="translate(216, 210)">
+      <!-- Critical (Red arc) -->
+      <circle cx="0" cy="0" r="85" fill="none" stroke="#EF4444" stroke-width="32" stroke-dasharray="105 534" stroke-dashoffset="0"/>
+      <!-- High (Orange arc) -->
+      <circle cx="0" cy="0" r="85" fill="none" stroke="#F97316" stroke-width="32" stroke-dasharray="190 534" stroke-dashoffset="-105"/>
+      <!-- Medium (Indigo arc) -->
+      <circle cx="0" cy="0" r="85" fill="none" stroke="#6366F1" stroke-width="32" stroke-dasharray="160 534" stroke-dashoffset="-295"/>
+      <!-- Low (Green arc) -->
+      <circle cx="0" cy="0" r="85" fill="none" stroke="#10B981" stroke-width="32" stroke-dasharray="79 534" stroke-dashoffset="-455"/>
+
+      <!-- Center text -->
+      <text x="0" y="-5" fill="#FFFFFF" font-family="sans-serif" font-size="28" font-weight="bold" text-anchor="middle">20</text>
+      <text x="0" y="16" fill="#64748B" font-family="sans-serif" font-size="12" text-anchor="middle">Total Issues</text>
+    </g>
+
+    <!-- Donut Legend Cards -->
+    <g transform="translate(30, 360)">
+      <!-- Critical -->
+      <rect x="0" y="0" width="180" height="38" rx="6" fill="#151C24" stroke="#26313D"/>
+      <circle cx="16" cy="19" r="5" fill="#EF4444"/>
+      <text x="30" y="23" fill="#F8FAFC" font-family="sans-serif" font-size="12">Critical</text>
+      <text x="165" y="23" fill="#EF4444" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="end">4 (20%)</text>
+
+      <!-- High -->
+      <rect x="190" y="0" width="180" height="38" rx="6" fill="#151C24" stroke="#26313D"/>
+      <circle cx="206" cy="19" r="5" fill="#F97316"/>
+      <text x="220" y="23" fill="#F8FAFC" font-family="sans-serif" font-size="12">High</text>
+      <text x="355" y="23" fill="#F97316" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="end">7 (35%)</text>
+
+      <!-- Medium -->
+      <rect x="0" y="48" width="180" height="38" rx="6" fill="#151C24" stroke="#26313D"/>
+      <circle cx="16" cy="67" r="5" fill="#6366F1"/>
+      <text x="30" y="71" fill="#F8FAFC" font-family="sans-serif" font-size="12">Medium</text>
+      <text x="165" y="71" fill="#6366F1" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="end">6 (30%)</text>
+
+      <!-- Low -->
+      <rect x="190" y="48" width="180" height="38" rx="6" fill="#151C24" stroke="#26313D"/>
+      <circle cx="206" cy="67" r="5" fill="#10B981"/>
+      <text x="220" y="71" fill="#F8FAFC" font-family="sans-serif" font-size="12">Low</text>
+      <text x="355" y="71" fill="#10B981" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="end">3 (15%)</text>
+    </g>
+  </g>
+</svg>
