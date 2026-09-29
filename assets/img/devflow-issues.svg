@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0F14"/>
+      <stop offset="100%" stop-color="#10161D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="700" fill="url(#bgGrad3)"/>
+
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="1200" height="60" fill="#10161D" stroke="#26313D" stroke-width="1"/>
+  <rect x="24" y="14" width="32" height="32" rx="8" fill="#6366F1"/>
+  <text x="33" y="36" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="bold">D</text>
+  <text x="68" y="36" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700">DevFlow</text>
+  <text x="135" y="36" fill="#64748B" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12">/ Issues / API-101</text>
+
+  <!-- Left Main Column (Issue Details & Screenshot Gallery) -->
+  <g transform="translate(24, 80)">
+    <!-- Back & Header -->
+    <text x="0" y="18" fill="#818CF8" font-family="sans-serif" font-size="12">← Back to API Gateway Modernization</text>
+
+    <!-- Main Card -->
+    <rect x="0" y="35" width="780" height="240" rx="12" fill="#10161D" stroke="#26313D"/>
+    <rect x="20" y="55" width="70" height="22" rx="4" fill="#6366F1" fill-opacity="0.2"/>
+    <text x="28" y="70" fill="#818CF8" font-family="sans-serif" font-size="11" font-weight="bold">API-101</text>
+
+    <rect x="100" y="55" width="80" height="22" rx="4" fill="#3B82F6" fill-opacity="0.15"/>
+    <text x="110" y="70" fill="#60A5FA" font-family="sans-serif" font-size="11">In Progress</text>
+
+    <rect x="190" y="55" width="90" height="22" rx="4" fill="#EF4444" fill-opacity="0.15"/>
+    <text x="198" y="70" fill="#F87171" font-family="sans-serif" font-size="11">Critical Priority</text>
+
+    <text x="20" y="112" fill="#FFFFFF" font-family="sans-serif" font-size="20" font-weight="bold">Fix authentication refresh token rotation race condition</text>
+
+    <rect x="20" y="130" width="740" height="90" rx="8" fill="#0B0F14" stroke="#1E293B"/>
+    <text x="36" y="155" fill="#94A3B8" font-family="sans-serif" font-size="12">When multiple client requests execute concurrently after token expiry, the refresh</text>
+    <text x="36" y="175" fill="#94A3B8" font-family="sans-serif" font-size="12">token rotation triggers multiple exchange calls resulting in race condition and 401 error.</text>
+    <text x="36" y="200" fill="#64748B" font-family="sans-serif" font-size="11">Labels: #auth · #security · #backend</text>
+
+    <!-- Attached Screenshot Gallery Card -->
+    <g transform="translate(0, 290)">
+      <rect x="0" y="0" width="780" height="290" rx="12" fill="#10161D" stroke="#26313D"/>
+      <text x="20" y="32" fill="#FFFFFF" font-family="sans-serif" font-size="15" font-weight="600">Attached Screenshots &amp; Reproduction Files (1)</text>
+
+      <!-- Screenshot Thumbnail Card -->
+      <g transform="translate(20, 50)">
+        <rect x="0" y="0" width="340" height="200" rx="10" fill="#151C24" stroke="#26313D"/>
+
+        <!-- Inner preview graphic -->
+        <rect x="10" y="10" width="320" height="120" rx="6" fill="#0B0F14"/>
+        <circle cx="25" cy="22" r="4" fill="#EF4444"/>
+        <circle cx="37" cy="22" r="4" fill="#F59E0B"/>
+        <circle cx="49" cy="22" r="4" fill="#10B981"/>
+        <rect x="25" y="35" width="290" height="8" rx="2" fill="#1E293B"/>
+        <rect x="25" y="50" width="180" height="8" rx="2" fill="#6366F1" fill-opacity="0.5"/>
+        <rect x="25" y="65" width="220" height="8" rx="2" fill="#EF4444" fill-opacity="0.4"/>
+        <rect x="25" y="80" width="140" height="8" rx="2" fill="#10B981" fill-opacity="0.4"/>
+
+        <!-- Zoom button overlay -->
+        <rect x="90" y="50" width="160" height="30" rx="6" fill="#6366F1"/>
+        <text x="170" y="69" fill="#FFFFFF" font-family="sans-serif" font-size="11" font-weight="600" text-anchor="middle">🔍 View Fullscreen</text>
+
+        <text x="14" y="152" fill="#F8FAFC" font-family="sans-serif" font-size="12" font-weight="500">api-jwt-race-condition.png</text>
+        <text x="14" y="172" fill="#64748B" font-family="sans-serif" font-size="11">23.1 KB · Image PNG · Verified State</text>
+        <text x="325" y="165" fill="#818CF8" font-family="sans-serif" font-size="11" text-anchor="end">Download ↓</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Sidebar (Properties & Team) -->
+  <g transform="translate(830, 115)">
+    <rect x="0" y="0" width="345" height="545" rx="12" fill="#10161D" stroke="#26313D"/>
+    <text x="24" y="36" fill="#FFFFFF" font-family="sans-serif" font-size="15" font-weight="600">Issue Properties</text>
+
+    <!-- Status Dropdown -->
+    <text x="24" y="75" fill="#64748B" font-family="sans-serif" font-size="11">Status</text>
+    <rect x="24" y="85" width="295" height="36" rx="6" fill="#151C24" stroke="#26313D"/>
+    <text x="38" y="108" fill="#FFFFFF" font-family="sans-serif" font-size="12">In Progress ▾</text>
+
+    <!-- Priority Dropdown -->
+    <text x="24" y="145" fill="#64748B" font-family="sans-serif" font-size="11">Priority</text>
+    <rect x="24" y="155" width="295" height="36" rx="6" fill="#151C24" stroke="#26313D"/>
+    <text x="38" y="178" fill="#F87171" font-family="sans-serif" font-size="12">Critical Priority ▾</text>
+
+    <!-- Assignee -->
+    <text x="24" y="215" fill="#64748B" font-family="sans-serif" font-size="11">Assignee</text>
+    <rect x="24" y="225" width="295" height="36" rx="6" fill="#151C24" stroke="#26313D"/>
+    <text x="38" y="248" fill="#FFFFFF" font-family="sans-serif" font-size="12">Mythili Developer (Full Stack) ▾</text>
+
+    <line x1="24" y1="285" x2="320" y2="285" stroke="#26313D"/>
+
+    <text x="24" y="320" fill="#64748B" font-family="sans-serif" font-size="12">Project</text>
+    <text x="320" y="320" fill="#818CF8" font-family="sans-serif" font-size="12" text-anchor="end">API Gateway</text>
+
+    <text x="24" y="360" fill="#64748B" font-family="sans-serif" font-size="12">Reporter</text>
+    <text x="320" y="360" fill="#E2E8F0" font-family="sans-serif" font-size="12" text-anchor="end">Priya Manager</text>
+
+    <text x="24" y="400" fill="#64748B" font-family="sans-serif" font-size="12">Due Date</text>
+    <text x="320" y="400" fill="#FBBF24" font-family="sans-serif" font-size="12" text-anchor="end">3 days remaining</text>
+
+    <text x="24" y="440" fill="#64748B" font-family="sans-serif" font-size="12">Socket State</text>
+    <text x="320" y="440" fill="#34D399" font-family="sans-serif" font-size="12" text-anchor="end">Connected · Synchronized</text>
+  </g>
+</svg>
