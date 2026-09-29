@@ -131,10 +131,10 @@ export const projects = [
           "Interactive donut breakdown with centered count, priority status chips, and live delivery burndown velocity.",
       },
       {
-        url: "/assets/img/image3.png",
-        title: "Delivery Velocity Area Chart & Metrics",
+        url: "/assets/img/image5.png",
+        title: "Issue Create and Update Logs",
         description:
-          "Continuous 7-day velocity chart tracking created vs completed engineering points with linear gradient fills.",
+          "Track issue creation and update activities with a detailed activity timeline, including status changes, assignments, comments, and other issue updates.",
       },
       {
         url: "/assets/img/image3.png",
@@ -143,7 +143,7 @@ export const projects = [
           "Full lifecycle project management with search, status/priority filtering, target deadlines, and team member stacks.",
       },
       {
-        url: "/assets/img/devflow-issues.svg",
+        url: "/assets/img/image4.png",
         title: "Issue Details & Screenshot Lightbox Gallery",
         description:
           "Engineering issue tracking with reproduction steps, inline screenshot attachments gallery, and live activity thread.",
@@ -185,7 +185,7 @@ export const projects = [
           "Responsive collection showcase with modern apparel lookbook, category filtering, and mobile-first design.",
       },
       {
-        url: "/assets/img/project22.jpg",
+        url: "/assets/img/image6.png",
         title: "Collection Details & Sizing Guide",
         description:
           "Interactive product view with fabric details, customer size charts, and quick-inquiry integration.",
@@ -217,7 +217,7 @@ export const projects = [
     image: "/assets/img/project3.jpg",
     screenshots: [
       {
-        url: "/assets/img/project3.jpg",
+        url: "/assets/img/img.png",
         title: "Ollama Local AI Chat Interface",
         description:
           "Clean messaging interface connected to local Ollama inference server with streaming responses.",

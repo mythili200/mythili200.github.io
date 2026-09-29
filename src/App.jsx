@@ -409,68 +409,770 @@ function Experience() {
   );
 }
 
-function Projects() {
-  const [activeModalProject, setActiveModalProject] = useState(null);
+function ProjectModal({ project, onClose }) {
+  const [activeTab, setActiveTab] = useState("gallery");
   const [activeScreenshotIdx, setActiveScreenshotIdx] = useState(0);
 
-  const handleOpenModal = (project) => {
-    setActiveModalProject(project);
-    setActiveScreenshotIdx(0);
-  };
-
-  const handleCloseModal = () => {
-    setActiveModalProject(null);
-  };
-
-  // Lock body scrolling while popup modal is open
+  // Lock body scroll while modal is active
   useEffect(() => {
-    if (activeModalProject) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = originalOverflow;
     };
-  }, [activeModalProject]);
+  }, []);
 
-  // Keyboard navigation: ESC to close, Left/Right arrow keys to cycle screenshots
+  // Keyboard controls: ESC to close, Left/Right arrow keys to cycle screenshots
   useEffect(() => {
-    if (!activeModalProject) return;
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        handleCloseModal();
+        onClose();
       } else if (e.key === "ArrowLeft") {
-        const count = activeModalProject.screenshots?.length || 1;
+        const count = project.screenshots?.length || 1;
         setActiveScreenshotIdx((prev) => (prev > 0 ? prev - 1 : count - 1));
       } else if (e.key === "ArrowRight") {
-        const count = activeModalProject.screenshots?.length || 1;
+        const count = project.screenshots?.length || 1;
         setActiveScreenshotIdx((prev) => (prev < count - 1 ? prev + 1 : 0));
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeModalProject]);
+  }, [project, onClose]);
+
+  const screenshots = project?.screenshots?.length
+    ? project.screenshots
+    : [
+        {
+          url: project.image,
+          title: project.name,
+          description: project.description,
+        },
+      ];
+
+  const currentScreenshot = screenshots[activeScreenshotIdx] || screenshots[0];
+
+  const getFallbackImage = () => {
+    if (project?.id === "devflow") return "/assets/img/devflow.png";
+    if (project?.id === "boutique") return "/assets/img/project2.png";
+    return "/assets/img/project3.jpg";
+  };
+
+  const getHostLabel = () => {
+    if (project.demo) {
+      try {
+        return new URL(project.demo).hostname;
+      } catch {
+        return project.demo.replace(/^https?:\/\//, "");
+      }
+    }
+    return `${project.id || "preview"}.local`;
+  };
+
+  return createPortal(
+    <div
+      className="project-modal-backdrop"
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 999999,
+        backgroundColor: "rgba(3, 6, 12, 0.88)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "clamp(12px, 3vw, 24px)",
+        boxSizing: "border-box",
+      }}>
+      <motion.div
+        className="project-modal-dialog"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-modal-title"
+        initial={{ opacity: 0, scale: 0.93, y: 22 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.93, y: 16 }}
+        transition={{ type: "spring", damping: 26, stiffness: 320 }}
+        style={{
+          width: "min(100%, 1100px)",
+          maxHeight: "92vh",
+          background: "linear-gradient(165deg, #101524 0%, #0a0d15 100%)",
+          border: "1px solid rgba(110, 231, 247, 0.35)",
+          borderRadius: "20px",
+          boxShadow:
+            "0 35px 100px rgba(0, 0, 0, 0.95), 0 0 60px rgba(110, 231, 247, 0.12)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          position: "relative",
+        }}>
+        {/* Header Bar */}
+        <div
+          className="project-modal-header"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "16px 22px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            background: "rgba(16, 22, 34, 0.85)",
+            backdropFilter: "blur(10px)",
+            gap: 16,
+          }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              minWidth: 0,
+            }}>
+            <span
+              style={{
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                background: "rgba(110, 231, 247, 0.1)",
+                border: "1px solid rgba(110, 231, 247, 0.25)",
+                padding: "4px 10px",
+                borderRadius: "999px",
+                whiteSpace: "nowrap",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+              }}>
+              <Sparkles size={12} />
+              {project.category || "Case Study"}
+            </span>
+            <h3
+              id="project-modal-title"
+              style={{
+                margin: 0,
+                fontSize: "clamp(1.1rem, 2vw, 1.45rem)",
+                fontWeight: 750,
+                letterSpacing: "-0.02em",
+                color: "#f8fafc",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}>
+              {project.name}
+            </h3>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* View Switcher Tabs */}
+            <div
+              style={{
+                display: "inline-flex",
+                background: "rgba(255, 255, 255, 0.05)",
+                borderRadius: "10px",
+                padding: "3px",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+              }}>
+              <button
+                type="button"
+                onClick={() => setActiveTab("gallery")}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "7px",
+                  fontSize: "0.76rem",
+                  fontWeight: 650,
+                  cursor: "pointer",
+                  border: 0,
+                  background:
+                    activeTab === "gallery"
+                      ? "rgba(110, 231, 247, 0.2)"
+                      : "transparent",
+                  color:
+                    activeTab === "gallery" ? "var(--accent)" : "var(--muted)",
+                  transition: "all 0.2s ease",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}>
+                <Eye size={13} />
+                <span>Gallery ({screenshots.length})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("overview")}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "7px",
+                  fontSize: "0.76rem",
+                  fontWeight: 650,
+                  cursor: "pointer",
+                  border: 0,
+                  background:
+                    activeTab === "overview"
+                      ? "rgba(110, 231, 247, 0.2)"
+                      : "transparent",
+                  color:
+                    activeTab === "overview" ? "var(--accent)" : "var(--muted)",
+                  transition: "all 0.2s ease",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}>
+                <Layers size={13} />
+                <span>Overview &amp; Tech</span>
+              </button>
+            </div>
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              title="Close modal (Esc)"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "7px 11px",
+                borderRadius: "9px",
+                background: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "var(--muted)",
+                cursor: "pointer",
+                fontSize: "0.76rem",
+                fontWeight: 650,
+                transition: "all 0.2s ease",
+              }}>
+              <span>Close</span>
+              <kbd
+                style={{
+                  background: "rgba(0,0,0,0.4)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "4px",
+                  padding: "1px 4px",
+                  fontSize: "0.65rem",
+                  color: "var(--muted-2)",
+                }}>
+                ESC
+              </kbd>
+              <X size={15} />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Scrollable Content */}
+        <div
+          style={{
+            padding: "20px 24px",
+            overflowY: "auto",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 20,
+          }}>
+          {activeTab === "gallery" ? (
+            /* Gallery Stage */
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {/* Browser Mockup Window */}
+              <div
+                style={{
+                  borderRadius: "14px",
+                  overflow: "hidden",
+                  border: "1px solid rgba(110, 231, 247, 0.25)",
+                  background: "#070a10",
+                  boxShadow: "0 18px 50px rgba(0, 0, 0, 0.7)",
+                }}>
+                {/* Mock Window Top Bar */}
+                <div
+                  style={{
+                    height: 38,
+                    background: "rgba(16, 22, 34, 0.9)",
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "0 14px",
+                    gap: 8,
+                  }}>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: "#ef4444",
+                      }}
+                    />
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: "#f59e0b",
+                      }}
+                    />
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: "#10b981",
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      margin: "0 auto",
+                      background: "rgba(0, 0, 0, 0.4)",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: "6px",
+                      padding: "2px 14px",
+                      fontSize: "0.72rem",
+                      color: "var(--muted)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}>
+                    <span style={{ color: "var(--accent)" }}>https://</span>
+                    <span>{getHostLabel()}</span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.72rem",
+                      color: "var(--accent)",
+                      fontWeight: 700,
+                    }}>
+                    {activeScreenshotIdx + 1} / {screenshots.length}
+                  </div>
+                </div>
+
+                {/* Screenshot Frame */}
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "clamp(260px, 46vh, 480px)",
+                    background: "#05070c",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                  }}>
+                  <img
+                    src={currentScreenshot.url}
+                    alt={currentScreenshot.title}
+                    key={currentScreenshot.url}
+                    onError={(e) => {
+                      e.currentTarget.src = getFallbackImage();
+                    }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      background: "#07090e",
+                    }}
+                  />
+
+                  {/* Navigation Chevrons */}
+                  {screenshots.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveScreenshotIdx((prev) =>
+                            prev > 0 ? prev - 1 : screenshots.length - 1,
+                          )
+                        }
+                        aria-label="Previous screenshot"
+                        style={{
+                          position: "absolute",
+                          left: 14,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          width: 42,
+                          height: 42,
+                          borderRadius: "50%",
+                          background: "rgba(8, 12, 20, 0.85)",
+                          border: "1px solid rgba(110, 231, 247, 0.35)",
+                          color: "var(--text)",
+                          display: "grid",
+                          placeItems: "center",
+                          cursor: "pointer",
+                          backdropFilter: "blur(8px)",
+                          transition: "all 0.2s ease",
+                          boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                        }}>
+                        <ChevronLeft size={22} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveScreenshotIdx((prev) =>
+                            prev < screenshots.length - 1 ? prev + 1 : 0,
+                          )
+                        }
+                        aria-label="Next screenshot"
+                        style={{
+                          position: "absolute",
+                          right: 14,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          width: 42,
+                          height: 42,
+                          borderRadius: "50%",
+                          background: "rgba(8, 12, 20, 0.85)",
+                          border: "1px solid rgba(110, 231, 247, 0.35)",
+                          color: "var(--text)",
+                          display: "grid",
+                          placeItems: "center",
+                          cursor: "pointer",
+                          backdropFilter: "blur(8px)",
+                          transition: "all 0.2s ease",
+                          boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                        }}>
+                        <ChevronRight size={22} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Caption & Description Box */}
+              <div
+                style={{
+                  background: "rgba(16, 22, 34, 0.6)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "14px 18px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                }}>
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "8px",
+                    background: "rgba(110, 231, 247, 0.12)",
+                    border: "1px solid rgba(110, 231, 247, 0.3)",
+                    display: "grid",
+                    placeItems: "center",
+                    color: "var(--accent)",
+                    flexShrink: 0,
+                    marginTop: 2,
+                  }}>
+                  <Sparkles size={16} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4
+                    style={{
+                      margin: "0 0 4px",
+                      fontSize: "0.96rem",
+                      fontWeight: 700,
+                      color: "#f8fafc",
+                    }}>
+                    {currentScreenshot.title}
+                  </h4>
+                  {currentScreenshot.description && (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "0.83rem",
+                        color: "var(--muted)",
+                        lineHeight: 1.55,
+                      }}>
+                      {currentScreenshot.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Clickable Thumbnail Strip */}
+              {screenshots.length > 1 && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    overflowX: "auto",
+                    paddingBottom: 4,
+                  }}>
+                  {screenshots.map((s, idx) => {
+                    const isSelected = idx === activeScreenshotIdx;
+                    return (
+                      <button
+                        key={s.title || idx}
+                        type="button"
+                        onClick={() => setActiveScreenshotIdx(idx)}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "8px 14px",
+                          borderRadius: "9px",
+                          background: isSelected
+                            ? "rgba(110, 231, 247, 0.16)"
+                            : "rgba(255, 255, 255, 0.035)",
+                          border: isSelected
+                            ? "1px solid var(--accent)"
+                            : "1px solid rgba(255, 255, 255, 0.1)",
+                          color: isSelected ? "var(--accent)" : "var(--muted)",
+                          fontSize: "0.77rem",
+                          fontWeight: isSelected ? 700 : 500,
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                          boxShadow: isSelected
+                            ? "0 0 15px rgba(110, 231, 247, 0.2)"
+                            : "none",
+                          transition: "all 0.2s ease",
+                        }}>
+                        <Eye size={13} />
+                        <span>{s.title}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Overview & Architecture Stage */
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.1fr 0.9fr",
+                gap: 22,
+                alignItems: "start",
+              }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div
+                  style={{
+                    background: "rgba(16, 22, 34, 0.55)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "14px",
+                    padding: "18px 20px",
+                  }}>
+                  <h4
+                    style={{
+                      margin: "0 0 8px",
+                      fontSize: "0.95rem",
+                      color: "var(--text)",
+                      fontWeight: 700,
+                    }}>
+                    System Architecture &amp; Engineering Overview
+                  </h4>
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "var(--muted)",
+                      fontSize: "0.85rem",
+                      lineHeight: 1.65,
+                    }}>
+                    {project.description}
+                  </p>
+                </div>
+
+                <div>
+                  <span
+                    style={{
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--muted-2)",
+                      display: "block",
+                      marginBottom: 8,
+                    }}>
+                    Core Technologies &amp; Libraries:
+                  </span>
+                  <div className="tag-row" style={{ margin: 0 }}>
+                    {project.tags?.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: "rgba(16, 22, 34, 0.55)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "14px",
+                  padding: "18px 20px",
+                }}>
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "var(--accent)",
+                    display: "block",
+                    marginBottom: 12,
+                  }}>
+                  Key Engineering Deliverables:
+                </span>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                    display: "grid",
+                    gap: 12,
+                  }}>
+                  {project.features?.map((feat) => (
+                    <li
+                      key={feat}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                        fontSize: "0.83rem",
+                        color: "#cbd5e1",
+                        lineHeight: 1.5,
+                      }}>
+                      <CheckCircle2
+                        size={16}
+                        style={{
+                          color: "var(--accent)",
+                          flexShrink: 0,
+                          marginTop: 2,
+                        }}
+                      />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Bottom Action Footer */}
+        <div
+          style={{
+            padding: "14px 22px",
+            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            background: "rgba(12, 16, 25, 0.88)",
+            backdropFilter: "blur(10px)",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: "0.74rem", color: "var(--muted-2)" }}>
+              Keyboard:{" "}
+              <kbd
+                style={{
+                  background: "rgba(0,0,0,0.3)",
+                  padding: "2px 5px",
+                  borderRadius: 4,
+                }}>
+                ←
+              </kbd>{" "}
+              <kbd
+                style={{
+                  background: "rgba(0,0,0,0.3)",
+                  padding: "2px 5px",
+                  borderRadius: 4,
+                }}>
+                →
+              </kbd>{" "}
+              to navigate,{" "}
+              <kbd
+                style={{
+                  background: "rgba(0,0,0,0.3)",
+                  padding: "2px 5px",
+                  borderRadius: 4,
+                }}>
+                ESC
+              </kbd>{" "}
+              to close
+            </span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  padding: "9px 16px",
+                  borderRadius: "9px",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  color: "var(--text)",
+                  fontSize: "0.82rem",
+                  fontWeight: 650,
+                  transition: "all 0.2s ease",
+                }}>
+                <Github size={15} />
+                <span>View Source Code</span>
+              </a>
+            )}
+            {project.demo && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  padding: "9px 18px",
+                  borderRadius: "9px",
+                  background: "var(--accent)",
+                  color: "#090b10",
+                  fontSize: "0.82rem",
+                  fontWeight: 750,
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 4px 18px rgba(110, 231, 247, 0.35)",
+                }}>
+                <ExternalLink size={15} />
+                <span>Launch Live Demo</span>
+              </a>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "9px 14px",
+                borderRadius: "9px",
+                background: "transparent",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                color: "var(--muted)",
+                fontSize: "0.82rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}>
+              <X size={15} />
+              <span>Close</span>
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>,
+    document.body,
+  );
+}
+
+function Projects() {
+  const [activeModalProject, setActiveModalProject] = useState(null);
 
   const getFallbackImage = (project) => {
     if (project?.id === "devflow") return "/assets/img/devflow.png";
     if (project?.id === "boutique") return "/assets/img/project2.png";
     return "/assets/img/project3.jpg";
   };
-
-  const screenshots = activeModalProject?.screenshots?.length
-    ? activeModalProject.screenshots
-    : activeModalProject
-      ? [
-          {
-            url: activeModalProject.image,
-            title: activeModalProject.name,
-            description: activeModalProject.description,
-          },
-        ]
-      : [];
-
-  const currentScreenshot = screenshots[activeScreenshotIdx] || screenshots[0];
 
   return (
     <Section
@@ -485,7 +1187,7 @@ function Projects() {
               key={project.name}
               variants={fadeUp}
               transition={{ delay: index * 0.08 }}
-              onClick={() => handleOpenModal(project)}>
+              onClick={() => setActiveModalProject(project)}>
               <div className="project-image">
                 <img
                   src={project.image}
@@ -525,7 +1227,7 @@ function Projects() {
                   <button
                     type="button"
                     className="project-preview-btn"
-                    onClick={() => handleOpenModal(project)}>
+                    onClick={() => setActiveModalProject(project)}>
                     <Sparkles size={14} />
                     <span>
                       Explore Showcase ({project.screenshots?.length || 1})
@@ -548,185 +1250,13 @@ function Projects() {
         })}
       </div>
 
-      {/* Interactive Popup Modal Dialog */}
+      {/* Interactive Popup Modal mounted directly to document.body via createPortal */}
       <AnimatePresence>
         {activeModalProject && (
-          <div className="project-modal-backdrop" onClick={handleCloseModal}>
-            <motion.div
-              className="project-modal-dialog"
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-project-title"
-              initial={{ opacity: 0, scale: 0.93, y: 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.93, y: 16 }}
-              transition={{ type: "spring", damping: 26, stiffness: 320 }}>
-              {/* Modal Header */}
-              <div className="project-modal-header">
-                <div className="modal-header-info">
-                  <span className="modal-category-badge">
-                    <Sparkles size={13} />
-                    {activeModalProject.category || "Project Case Study"}
-                  </span>
-                  <h3 id="modal-project-title">{activeModalProject.name}</h3>
-                </div>
-                <button
-                  type="button"
-                  className="modal-close-btn"
-                  onClick={handleCloseModal}
-                  title="Close popup (Esc)">
-                  <span>Close</span>
-                  <kbd>ESC</kbd>
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Modal Body */}
-              <div className="project-modal-body">
-                {/* Left Column: Interactive Screenshot Carousel Stage */}
-                <div className="modal-stage">
-                  <div className="modal-img-box">
-                    <img
-                      src={currentScreenshot?.url || activeModalProject.image}
-                      alt={currentScreenshot?.title || activeModalProject.name}
-                      key={currentScreenshot?.url}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          getFallbackImage(activeModalProject);
-                      }}
-                    />
-                    {screenshots.length > 1 && (
-                      <>
-                        <button
-                          type="button"
-                          className="modal-nav-btn prev"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveScreenshotIdx((prev) =>
-                              prev > 0 ? prev - 1 : screenshots.length - 1,
-                            );
-                          }}
-                          aria-label="Previous screenshot">
-                          <ChevronLeft size={20} />
-                        </button>
-                        <button
-                          type="button"
-                          className="modal-nav-btn next"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveScreenshotIdx((prev) =>
-                              prev < screenshots.length - 1 ? prev + 1 : 0,
-                            );
-                          }}
-                          aria-label="Next screenshot">
-                          <ChevronRight size={20} />
-                        </button>
-                        <div className="modal-slide-counter">
-                          {activeScreenshotIdx + 1} / {screenshots.length}
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Screenshot Caption */}
-                  <div className="modal-caption">
-                    <h4>
-                      <Sparkles size={16} color="var(--accent)" />
-                      <span>
-                        {currentScreenshot?.title || activeModalProject.name}
-                      </span>
-                    </h4>
-                    {currentScreenshot?.description && (
-                      <p>{currentScreenshot.description}</p>
-                    )}
-                  </div>
-
-                  {/* Screenshot Thumbnails Strip */}
-                  {screenshots.length > 1 && (
-                    <div className="modal-thumbs">
-                      {screenshots.map((s, idx) => (
-                        <button
-                          key={s.title || idx}
-                          type="button"
-                          className={`modal-thumb-btn ${
-                            idx === activeScreenshotIdx ? "active" : ""
-                          }`}
-                          onClick={() => setActiveScreenshotIdx(idx)}>
-                          <Eye size={12} />
-                          <span>{s.title}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Column: Architecture & Engineering Details */}
-                <div className="modal-details">
-                  <div className="modal-desc-box">
-                    <h4>Architecture &amp; System Overview</h4>
-                    <p>{activeModalProject.description}</p>
-                  </div>
-
-                  <div>
-                    <span className="modal-section-label">
-                      TECHNOLOGIES &amp; LIBRARIES:
-                    </span>
-                    <div className="tag-row" style={{ margin: 0 }}>
-                      {activeModalProject.tags?.map((t) => (
-                        <span key={t}>{t}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="modal-section-label">
-                      KEY CAPABILITIES &amp; DELIVERABLES:
-                    </span>
-                    <ul className="modal-highlights">
-                      {activeModalProject.features?.map((feat) => (
-                        <li key={feat}>
-                          <CheckCircle2 size={16} />
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Modal Footer Action Buttons */}
-              <div className="project-modal-footer">
-                {activeModalProject.github && (
-                  <a
-                    href={activeModalProject.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="modal-cta-secondary">
-                    <Github size={16} />
-                    <span>View Source Code</span>
-                  </a>
-                )}
-                {activeModalProject.demo && (
-                  <a
-                    href={activeModalProject.demo}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="modal-cta-primary">
-                    <ExternalLink size={16} />
-                    <span>Launch Live Demo</span>
-                  </a>
-                )}
-                <button
-                  type="button"
-                  className="modal-cta-close"
-                  onClick={handleCloseModal}>
-                  <X size={15} />
-                  <span>Close Window</span>
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          <ProjectModal
+            project={activeModalProject}
+            onClose={() => setActiveModalProject(null)}
+          />
         )}
       </AnimatePresence>
     </Section>
