@@ -2,7 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main] # Change to 'master' if your main branch is master
+    branches: [main] # or 'master' depending on your default branch name
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
