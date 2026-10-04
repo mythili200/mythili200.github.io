@@ -217,6 +217,13 @@ function Hero() {
               Contact Me <Mail size={17} />
             </a>
             <a
+              className="btn btn-resume"
+              href={profile.resume}
+              target="_blank"
+              rel="noreferrer">
+              <Download size={16} /> Resume
+            </a>
+            <a
               className="icon-link"
               aria-label="GitHub"
               href={profile.github}
