@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -38,11 +44,22 @@ import {
 } from "./data";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 26 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
+    },
   },
 };
 
@@ -55,12 +72,20 @@ function Section({ id, eyebrow, title, children }) {
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "visible"}
       viewport={{ once: true, amount: 0.12 }}
-      variants={fadeUp}>
+      variants={staggerContainer}>
       <div className="container">
         <div className="section-heading">
-          <span className="eyebrow">{eyebrow}</span>
-          <h2>{title}</h2>
-          <div className="heading-line" />
+          <motion.span variants={fadeUp} className="eyebrow">
+            {eyebrow}
+          </motion.span>
+          <motion.h2 variants={fadeUp}>{title}</motion.h2>
+          <motion.div
+            className="heading-line"
+            initial={{ width: 0 }}
+            whileInView={{ width: 48 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+          />
         </div>
         {children}
       </div>
@@ -91,7 +116,12 @@ function Header({ active }) {
             e.preventDefault();
             go("intro");
           }}>
-          <span className="brand-mark">M</span>
+          <motion.span
+            className="brand-mark"
+            whileHover={{ rotate: 360, scale: 1.08 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}>
+            M
+          </motion.span>
           <span>
             <strong>Mythili</strong>
             <small>Software Developer</small>
@@ -100,20 +130,26 @@ function Header({ active }) {
 
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.map(([id, label]) => (
-            <a
+            <motion.a
               key={id}
               className={active === id ? "active" : ""}
-              href={`#${id}`}>
+              href={`#${id}`}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.15 }}>
               {label}
-            </a>
+            </motion.a>
           ))}
-          <a
+          <motion.a
             className="nav-resume"
             href={profile.resume}
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}>
             Resume <ArrowUpRight size={15} />
-          </a>
+          </motion.a>
         </nav>
 
         <button
@@ -128,9 +164,10 @@ function Header({ active }) {
         {open && (
           <motion.div
             className="mobile-menu"
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -14 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}>
+            exit={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}>
             {navItems.map(([id, label]) => (
               <a
                 key={id}
@@ -171,91 +208,135 @@ function Hero() {
       2600,
     );
     return () => clearInterval(timer);
-  }, []);
+  }, [roles.length]);
 
   return (
     <section id="intro" className="hero">
       <div className="hero-grid" />
-      <div className="hero-glow glow-one" />
-      <div className="hero-glow glow-two" />
+      <motion.div
+        className="hero-glow glow-one"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.08, 0.16, 0.08],
+          x: [0, 25, 0],
+          y: [0, -20, 0],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="hero-glow glow-two"
+        animate={{
+          scale: [1, 1.25, 1],
+          opacity: [0.07, 0.15, 0.07],
+          x: [0, -30, 0],
+          y: [0, 20, 0],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
       <div className="container hero-inner">
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={fadeUp}
+          variants={staggerContainer}
           className="hero-copy">
-          <div className="availability">
-            <span /> Open to opportunities
-          </div>
-          <p className="hero-kicker">Hello, I&apos;m</p>
-          <h1>
+          <motion.div variants={fadeUp} className="availability">
+            <motion.span
+              animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />{" "}
+            Open to opportunities
+          </motion.div>
+          <motion.p variants={fadeUp} className="hero-kicker">Hello, I&apos;m</motion.p>
+          <motion.h1 variants={fadeUp}>
             Mythili <span>P.</span>
-          </h1>
-          <div className="hero-role">
+          </motion.h1>
+          <motion.div variants={fadeUp} className="hero-role">
             <span>A </span>
             <AnimatePresence mode="wait">
               <motion.strong
                 key={roles[roleIndex]}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}>
+                initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -12, filter: "blur(4px)" }}
+                transition={{ duration: 0.32 }}>
                 {roles[roleIndex]}
               </motion.strong>
             </AnimatePresence>
-          </div>
-          <p className="hero-description">
+          </motion.div>
+          <motion.p variants={fadeUp} className="hero-description">
             Software Developer building responsive web applications and RESTful
             APIs with React, Laravel, Node.js, and modern JavaScript
             technologies.
-          </p>
-          <div className="hero-actions">
-            <a className="btn btn-primary" href="#projects">
+          </motion.p>
+          <motion.div variants={fadeUp} className="hero-actions">
+            <motion.a
+              className="btn btn-primary"
+              href="#projects"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}>
               View Projects <ArrowDown size={17} />
-            </a>
-            <a className="btn btn-secondary" href="#contact">
+            </motion.a>
+            <motion.a
+              className="btn btn-secondary"
+              href="#contact"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}>
               Contact Me <Mail size={17} />
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               className="btn btn-resume"
               href={profile.resume}
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}>
               <Download size={16} /> Resume
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               className="icon-link"
               aria-label="GitHub"
               href={profile.github}
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+              whileHover={{ scale: 1.1, y: -3 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}>
               <Github size={20} />
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               className="icon-link"
               aria-label="LinkedIn"
               href={profile.linkedin}
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+              whileHover={{ scale: 1.1, y: -3 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}>
               <Linkedin size={20} />
-            </a>
-          </div>
-          <div className="hero-meta">
+            </motion.a>
+          </motion.div>
+          <motion.div variants={fadeUp} className="hero-meta">
             <span>
               <MapPin size={15} /> {profile.location}
             </span>
             <span>
               <Code2 size={15} /> Full Stack Development
             </span>
-          </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
           className="hero-visual"
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}>
-          <div className="code-card">
+          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+          <motion.div
+            className="code-card"
+            whileHover={{ y: -6, rotate: 0, boxShadow: "0 35px 100px rgba(0,0,0,0.5)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}>
             <div className="window-bar">
               <span />
               <span />
@@ -275,13 +356,21 @@ function Hero() {
   focus: "Clean & scalable web apps"
 };`}</code>
             </pre>
-          </div>
-          <div className="floating-chip chip-react">
+          </motion.div>
+          <motion.div
+            className="floating-chip chip-react"
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+            whileHover={{ scale: 1.12, y: -14 }}>
             <Code2 size={16} /> React.js
-          </div>
-          <div className="floating-chip chip-api">
+          </motion.div>
+          <motion.div
+            className="floating-chip chip-api"
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+            whileHover={{ scale: 1.12, y: 14 }}>
             <Server size={16} /> REST APIs
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
@@ -295,7 +384,7 @@ function About() {
       eyebrow="01 · About"
       title="A developer who enjoys solving real problems.">
       <div className="about-grid">
-        <div className="about-copy">
+        <motion.div variants={fadeUp} className="about-copy">
           <p className="lead">
             I&apos;m a self-motivated Full Stack Developer focused on building
             scalable, responsive web applications and RESTful APIs.
@@ -310,21 +399,30 @@ function About() {
             I&apos;m also exploring AI integration using Ollama and modern AI
             APIs to enhance user experiences.
           </p>
-        </div>
-        <div className="about-panel">
-          <div className="stat">
+        </motion.div>
+        <motion.div variants={fadeUp} className="about-panel">
+          <motion.div
+            className="stat"
+            whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.02)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}>
             <strong>2.5+</strong>
             <span>Years of professional experience</span>
-          </div>
-          <div className="stat">
+          </motion.div>
+          <motion.div
+            className="stat"
+            whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.02)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}>
             <strong>Full Stack</strong>
-            <span>Frontend, backend & API development</span>
-          </div>
-          <div className="stat">
+            <span>Frontend, backend &amp; API development</span>
+          </motion.div>
+          <motion.div
+            className="stat"
+            whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.02)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}>
             <strong>Modern Web</strong>
             <span>Responsive, accessible interfaces</span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </Section>
   );
@@ -344,23 +442,42 @@ function Skills() {
       eyebrow="02 · Skills"
       title="Tools I use to build products.">
       <div className="skills-grid">
-        {skillGroups.map((group, index) => {
+        {skillGroups.map((group) => {
           const Icon = groupIcons[group.title] || Code2;
           return (
             <motion.article
               className="skill-group"
               key={group.title}
               variants={fadeUp}
-              transition={{ delay: index * 0.05 }}>
+              whileHover={{
+                y: -6,
+                borderColor: "rgba(110, 231, 247, 0.35)",
+                boxShadow: "0 18px 45px rgba(0, 0, 0, 0.4)",
+              }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}>
               <div className="skill-heading">
-                <span className="skill-icon">
+                <motion.span
+                  className="skill-icon"
+                  whileHover={{ rotate: 10, scale: 1.12 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}>
                   <Icon size={20} />
-                </span>
+                </motion.span>
                 <h3>{group.title}</h3>
               </div>
               <div className="skill-list">
                 {group.items.map((item) => (
-                  <span key={item}>{item}</span>
+                  <motion.span
+                    key={item}
+                    whileHover={{
+                      scale: 1.08,
+                      y: -2,
+                      borderColor: "rgba(110, 231, 247, 0.6)",
+                      color: "#ffffff",
+                      backgroundColor: "rgba(110, 231, 247, 0.12)",
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+                    {item}
+                  </motion.span>
                 ))}
               </div>
             </motion.article>
@@ -378,14 +495,30 @@ function Experience() {
       eyebrow="03 · Experience"
       title="Experience that shaped my engineering approach.">
       <div className="timeline">
-        {experiences.map((exp, index) => (
+        {experiences.map((exp) => (
           <motion.article
             className="timeline-item"
             key={exp.company}
-            variants={fadeUp}
-            transition={{ delay: index * 0.1 }}>
-            <div className="timeline-dot" />
-            <div className="experience-card">
+            variants={fadeUp}>
+            <motion.div
+              className="timeline-dot"
+              animate={{
+                boxShadow: [
+                  "0 0 0 4px rgba(110, 231, 247, 0.08)",
+                  "0 0 0 9px rgba(110, 231, 247, 0.25)",
+                  "0 0 0 4px rgba(110, 231, 247, 0.08)",
+                ],
+              }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="experience-card"
+              whileHover={{
+                y: -4,
+                borderColor: "rgba(110, 231, 247, 0.35)",
+                boxShadow: "0 18px 50px rgba(0, 0, 0, 0.45)",
+              }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}>
               <div className="experience-top">
                 <div>
                   <span className="role">{exp.role}</span>
@@ -398,17 +531,29 @@ function Experience() {
               </div>
               <div className="tag-row">
                 {exp.technologies.map((tech) => (
-                  <span key={tech}>{tech}</span>
+                  <motion.span
+                    key={tech}
+                    whileHover={{
+                      scale: 1.08,
+                      y: -2,
+                      borderColor: "rgba(110, 231, 247, 0.5)",
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+                    {tech}
+                  </motion.span>
                 ))}
               </div>
               <ul>
                 {exp.bullets.map((bullet) => (
-                  <li key={bullet}>
+                  <motion.li
+                    key={bullet}
+                    whileHover={{ x: 4 }}
+                    transition={{ duration: 0.15 }}>
                     <CheckCircle2 size={15} /> <span>{bullet}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </motion.article>
         ))}
       </div>
@@ -678,280 +823,366 @@ function ProjectModal({ project, onClose }) {
             flexDirection: "column",
             gap: 20,
           }}>
-          {activeTab === "gallery" ? (
-            /* Gallery Stage */
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {/* Browser Mockup Window */}
-              <div
-                style={{
-                  borderRadius: "14px",
-                  overflow: "hidden",
-                  border: "1px solid rgba(110, 231, 247, 0.25)",
-                  background: "#070a10",
-                  boxShadow: "0 18px 50px rgba(0, 0, 0, 0.7)",
-                }}>
-                {/* Mock Window Top Bar */}
+          <AnimatePresence mode="wait">
+            {activeTab === "gallery" ? (
+              /* Gallery Stage */
+              <motion.div
+                key="gallery"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22 }}
+                style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {/* Browser Mockup Window */}
                 <div
                   style={{
-                    height: 38,
-                    background: "rgba(16, 22, 34, 0.9)",
-                    borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "0 14px",
-                    gap: 8,
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    border: "1px solid rgba(110, 231, 247, 0.25)",
+                    background: "#070a10",
+                    boxShadow: "0 18px 50px rgba(0, 0, 0, 0.7)",
                   }}>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: "#ef4444",
-                      }}
-                    />
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: "#f59e0b",
-                      }}
-                    />
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: "#10b981",
-                      }}
-                    />
-                  </div>
+                  {/* Mock Window Top Bar */}
                   <div
                     style={{
-                      margin: "0 auto",
-                      background: "rgba(0, 0, 0, 0.4)",
-                      border: "1px solid rgba(255, 255, 255, 0.08)",
-                      borderRadius: "6px",
-                      padding: "2px 14px",
-                      fontSize: "0.72rem",
-                      color: "var(--muted)",
+                      height: 38,
+                      background: "rgba(16, 22, 34, 0.9)",
+                      borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
                       display: "flex",
                       alignItems: "center",
-                      gap: 6,
+                      padding: "0 14px",
+                      gap: 8,
                     }}>
-                    <span style={{ color: "var(--accent)" }}>https://</span>
-                    <span>{getHostLabel()}</span>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      <span
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: "50%",
+                          background: "#ef4444",
+                        }}
+                      />
+                      <span
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: "50%",
+                          background: "#f59e0b",
+                        }}
+                      />
+                      <span
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: "50%",
+                          background: "#10b981",
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        margin: "0 auto",
+                        background: "rgba(0, 0, 0, 0.4)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "6px",
+                        padding: "2px 14px",
+                        fontSize: "0.72rem",
+                        color: "var(--muted)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                      }}>
+                      <span style={{ color: "var(--accent)" }}>https://</span>
+                      <span>{getHostLabel()}</span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--accent)",
+                        fontWeight: 700,
+                      }}>
+                      {activeScreenshotIdx + 1} / {screenshots.length}
+                    </div>
                   </div>
+
+                  {/* Screenshot Frame with Cross-Fade */}
                   <div
                     style={{
-                      fontSize: "0.72rem",
-                      color: "var(--accent)",
-                      fontWeight: 700,
+                      position: "relative",
+                      width: "100%",
+                      height: "clamp(260px, 46vh, 480px)",
+                      background: "#05070c",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
                     }}>
-                    {activeScreenshotIdx + 1} / {screenshots.length}
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={currentScreenshot.url}
+                        src={currentScreenshot.url}
+                        alt={currentScreenshot.title}
+                        initial={{ opacity: 0, scale: 0.985 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1.01 }}
+                        transition={{ duration: 0.22, ease: "easeOut" }}
+                        onError={(e) => {
+                          e.currentTarget.src = getFallbackImage();
+                        }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          background: "#07090e",
+                        }}
+                      />
+                    </AnimatePresence>
+
+                    {/* Navigation Chevrons */}
+                    {screenshots.length > 1 && (
+                      <>
+                        <motion.button
+                          type="button"
+                          onClick={() =>
+                            setActiveScreenshotIdx((prev) =>
+                              prev > 0 ? prev - 1 : screenshots.length - 1,
+                            )
+                          }
+                          aria-label="Previous screenshot"
+                          whileHover={{
+                            scale: 1.12,
+                            backgroundColor: "rgba(110, 231, 247, 0.22)",
+                          }}
+                          whileTap={{ scale: 0.92 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 20,
+                          }}
+                          style={{
+                            position: "absolute",
+                            left: 14,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            width: 42,
+                            height: 42,
+                            borderRadius: "50%",
+                            background: "rgba(8, 12, 20, 0.85)",
+                            border: "1px solid rgba(110, 231, 247, 0.35)",
+                            color: "var(--text)",
+                            display: "grid",
+                            placeItems: "center",
+                            cursor: "pointer",
+                            backdropFilter: "blur(8px)",
+                            boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                          }}>
+                          <ChevronLeft size={22} />
+                        </motion.button>
+
+                        <motion.button
+                          type="button"
+                          onClick={() =>
+                            setActiveScreenshotIdx((prev) =>
+                              prev < screenshots.length - 1 ? prev + 1 : 0,
+                            )
+                          }
+                          aria-label="Next screenshot"
+                          whileHover={{
+                            scale: 1.12,
+                            backgroundColor: "rgba(110, 231, 247, 0.22)",
+                          }}
+                          whileTap={{ scale: 0.92 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 20,
+                          }}
+                          style={{
+                            position: "absolute",
+                            right: 14,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            width: 42,
+                            height: 42,
+                            borderRadius: "50%",
+                            background: "rgba(8, 12, 20, 0.85)",
+                            border: "1px solid rgba(110, 231, 247, 0.35)",
+                            color: "var(--text)",
+                            display: "grid",
+                            placeItems: "center",
+                            cursor: "pointer",
+                            backdropFilter: "blur(8px)",
+                            boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                          }}>
+                          <ChevronRight size={22} />
+                        </motion.button>
+                      </>
+                    )}
                   </div>
                 </div>
 
-                {/* Screenshot Frame */}
+                {/* Caption & Description Box */}
                 <div
                   style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "clamp(260px, 46vh, 480px)",
-                    background: "#05070c",
+                    background: "rgba(16, 22, 34, 0.6)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: "12px",
+                    padding: "14px 18px",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    overflow: "hidden",
+                    alignItems: "flex-start",
+                    gap: 12,
                   }}>
-                  <img
-                    src={currentScreenshot.url}
-                    alt={currentScreenshot.title}
-                    key={currentScreenshot.url}
-                    onError={(e) => {
-                      e.currentTarget.src = getFallbackImage();
-                    }}
+                  <div
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                      background: "#07090e",
-                    }}
-                  />
-
-                  {/* Navigation Chevrons */}
-                  {screenshots.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveScreenshotIdx((prev) =>
-                            prev > 0 ? prev - 1 : screenshots.length - 1,
-                          )
-                        }
-                        aria-label="Previous screenshot"
+                      width: 32,
+                      height: 32,
+                      borderRadius: "8px",
+                      background: "rgba(110, 231, 247, 0.12)",
+                      border: "1px solid rgba(110, 231, 247, 0.3)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: "var(--accent)",
+                      flexShrink: 0,
+                      marginTop: 2,
+                    }}>
+                    <Sparkles size={16} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h4
+                      style={{
+                        margin: "0 0 4px",
+                        fontSize: "0.96rem",
+                        fontWeight: 700,
+                        color: "#f8fafc",
+                      }}>
+                      {currentScreenshot.title}
+                    </h4>
+                    {currentScreenshot.description && (
+                      <p
                         style={{
-                          position: "absolute",
-                          left: 14,
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          width: 42,
-                          height: 42,
-                          borderRadius: "50%",
-                          background: "rgba(8, 12, 20, 0.85)",
-                          border: "1px solid rgba(110, 231, 247, 0.35)",
-                          color: "var(--text)",
-                          display: "grid",
-                          placeItems: "center",
-                          cursor: "pointer",
-                          backdropFilter: "blur(8px)",
-                          transition: "all 0.2s ease",
-                          boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                          margin: 0,
+                          fontSize: "0.83rem",
+                          color: "var(--muted)",
+                          lineHeight: 1.55,
                         }}>
-                        <ChevronLeft size={22} />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveScreenshotIdx((prev) =>
-                            prev < screenshots.length - 1 ? prev + 1 : 0,
-                          )
-                        }
-                        aria-label="Next screenshot"
-                        style={{
-                          position: "absolute",
-                          right: 14,
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          width: 42,
-                          height: 42,
-                          borderRadius: "50%",
-                          background: "rgba(8, 12, 20, 0.85)",
-                          border: "1px solid rgba(110, 231, 247, 0.35)",
-                          color: "var(--text)",
-                          display: "grid",
-                          placeItems: "center",
-                          cursor: "pointer",
-                          backdropFilter: "blur(8px)",
-                          transition: "all 0.2s ease",
-                          boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
-                        }}>
-                        <ChevronRight size={22} />
-                      </button>
-                    </>
-                  )}
+                        {currentScreenshot.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Caption & Description Box */}
-              <div
+                {/* Clickable Thumbnail Strip */}
+                {screenshots.length > 1 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      overflowX: "auto",
+                      paddingBottom: 4,
+                    }}>
+                    {screenshots.map((s, idx) => {
+                      const isSelected = idx === activeScreenshotIdx;
+                      return (
+                        <motion.button
+                          key={s.title || idx}
+                          type="button"
+                          onClick={() => setActiveScreenshotIdx(idx)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 8,
+                            padding: "8px 14px",
+                            borderRadius: "9px",
+                            background: isSelected
+                              ? "rgba(110, 231, 247, 0.16)"
+                              : "rgba(255, 255, 255, 0.035)",
+                            border: isSelected
+                              ? "1px solid var(--accent)"
+                              : "1px solid rgba(255, 255, 255, 0.1)",
+                            color: isSelected ? "var(--accent)" : "var(--muted)",
+                            fontSize: "0.77rem",
+                            fontWeight: isSelected ? 700 : 500,
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            boxShadow: isSelected
+                              ? "0 0 15px rgba(110, 231, 247, 0.2)"
+                              : "none",
+                            transition: "all 0.2s ease",
+                          }}>
+                          <Eye size={13} />
+                          <span>{s.title}</span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              /* Overview & Architecture Stage */
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22 }}
                 style={{
-                  background: "rgba(16, 22, 34, 0.6)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "12px",
-                  padding: "14px 18px",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 12,
+                  display: "grid",
+                  gridTemplateColumns: "1.1fr 0.9fr",
+                  gap: 22,
+                  alignItems: "start",
                 }}>
                 <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "8px",
-                    background: "rgba(110, 231, 247, 0.12)",
-                    border: "1px solid rgba(110, 231, 247, 0.3)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--accent)",
-                    flexShrink: 0,
-                    marginTop: 2,
-                  }}>
-                  <Sparkles size={16} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h4
+                  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div
                     style={{
-                      margin: "0 0 4px",
-                      fontSize: "0.96rem",
-                      fontWeight: 700,
-                      color: "#f8fafc",
+                      background: "rgba(16, 22, 34, 0.55)",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: "14px",
+                      padding: "18px 20px",
                     }}>
-                    {currentScreenshot.title}
-                  </h4>
-                  {currentScreenshot.description && (
+                    <h4
+                      style={{
+                        margin: "0 0 8px",
+                        fontSize: "0.95rem",
+                        color: "var(--text)",
+                        fontWeight: 700,
+                      }}>
+                      System Architecture &amp; Engineering Overview
+                    </h4>
                     <p
                       style={{
                         margin: 0,
-                        fontSize: "0.83rem",
                         color: "var(--muted)",
-                        lineHeight: 1.55,
+                        fontSize: "0.85rem",
+                        lineHeight: 1.65,
                       }}>
-                      {currentScreenshot.description}
+                      {project.description}
                     </p>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              {/* Clickable Thumbnail Strip */}
-              {screenshots.length > 1 && (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 10,
-                    overflowX: "auto",
-                    paddingBottom: 4,
-                  }}>
-                  {screenshots.map((s, idx) => {
-                    const isSelected = idx === activeScreenshotIdx;
-                    return (
-                      <button
-                        key={s.title || idx}
-                        type="button"
-                        onClick={() => setActiveScreenshotIdx(idx)}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 8,
-                          padding: "8px 14px",
-                          borderRadius: "9px",
-                          background: isSelected
-                            ? "rgba(110, 231, 247, 0.16)"
-                            : "rgba(255, 255, 255, 0.035)",
-                          border: isSelected
-                            ? "1px solid var(--accent)"
-                            : "1px solid rgba(255, 255, 255, 0.1)",
-                          color: isSelected ? "var(--accent)" : "var(--muted)",
-                          fontSize: "0.77rem",
-                          fontWeight: isSelected ? 700 : 500,
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                          boxShadow: isSelected
-                            ? "0 0 15px rgba(110, 231, 247, 0.2)"
-                            : "none",
-                          transition: "all 0.2s ease",
-                        }}>
-                        <Eye size={13} />
-                        <span>{s.title}</span>
-                      </button>
-                    );
-                  })}
+                  <div>
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        color: "var(--muted-2)",
+                        display: "block",
+                        marginBottom: 8,
+                      }}>
+                      Core Technologies &amp; Libraries:
+                    </span>
+                    <div className="tag-row" style={{ margin: 0 }}>
+                      {project.tags?.map((t) => (
+                        <span key={t}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          ) : (
-            /* Overview & Architecture Stage */
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.1fr 0.9fr",
-                gap: 22,
-                alignItems: "start",
-              }}>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
                 <div
                   style={{
                     background: "rgba(16, 22, 34, 0.55)",
@@ -959,100 +1190,53 @@ function ProjectModal({ project, onClose }) {
                     borderRadius: "14px",
                     padding: "18px 20px",
                   }}>
-                  <h4
-                    style={{
-                      margin: "0 0 8px",
-                      fontSize: "0.95rem",
-                      color: "var(--text)",
-                      fontWeight: 700,
-                    }}>
-                    System Architecture &amp; Engineering Overview
-                  </h4>
-                  <p
-                    style={{
-                      margin: 0,
-                      color: "var(--muted)",
-                      fontSize: "0.85rem",
-                      lineHeight: 1.65,
-                    }}>
-                    {project.description}
-                  </p>
-                </div>
-
-                <div>
                   <span
                     style={{
                       fontSize: "0.72rem",
                       fontWeight: 700,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
-                      color: "var(--muted-2)",
+                      color: "var(--accent)",
                       display: "block",
-                      marginBottom: 8,
+                      marginBottom: 12,
                     }}>
-                    Core Technologies &amp; Libraries:
+                    Key Engineering Deliverables:
                   </span>
-                  <div className="tag-row" style={{ margin: 0 }}>
-                    {project.tags?.map((t) => (
-                      <span key={t}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  background: "rgba(16, 22, 34, 0.55)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "14px",
-                  padding: "18px 20px",
-                }}>
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: "var(--accent)",
-                    display: "block",
-                    marginBottom: 12,
-                  }}>
-                  Key Engineering Deliverables:
-                </span>
-                <ul
-                  style={{
-                    listStyle: "none",
-                    padding: 0,
-                    margin: 0,
-                    display: "grid",
-                    gap: 12,
-                  }}>
-                  {project.features?.map((feat) => (
-                    <li
-                      key={feat}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        fontSize: "0.83rem",
-                        color: "#cbd5e1",
-                        lineHeight: 1.5,
-                      }}>
-                      <CheckCircle2
-                        size={16}
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      padding: 0,
+                      margin: 0,
+                      display: "grid",
+                      gap: 12,
+                    }}>
+                    {project.features?.map((feat) => (
+                      <li
+                        key={feat}
                         style={{
-                          color: "var(--accent)",
-                          flexShrink: 0,
-                          marginTop: 2,
-                        }}
-                      />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 10,
+                          fontSize: "0.83rem",
+                          color: "#cbd5e1",
+                          lineHeight: 1.5,
+                        }}>
+                        <CheckCircle2
+                          size={16}
+                          style={{
+                            color: "var(--accent)",
+                            flexShrink: 0,
+                            marginTop: 2,
+                          }}
+                        />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Modal Bottom Action Footer */}
@@ -1102,10 +1286,13 @@ function ProjectModal({ project, onClose }) {
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {project.github && (
-              <a
+              <motion.a
                 href={project.github}
                 target="_blank"
                 rel="noreferrer"
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1121,13 +1308,20 @@ function ProjectModal({ project, onClose }) {
                 }}>
                 <Github size={15} />
                 <span>View Source Code</span>
-              </a>
+              </motion.a>
             )}
             {project.demo && (
-              <a
+              <motion.a
                 href={project.demo}
                 target="_blank"
                 rel="noreferrer"
+                whileHover={{
+                  scale: 1.04,
+                  y: -1,
+                  boxShadow: "0 6px 25px rgba(110, 231, 247, 0.5)",
+                }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1143,11 +1337,14 @@ function ProjectModal({ project, onClose }) {
                 }}>
                 <ExternalLink size={15} />
                 <span>Launch Live Demo</span>
-              </a>
+              </motion.a>
             )}
-            <button
+            <motion.button
               type="button"
               onClick={onClose}
+              whileHover={{ scale: 1.04, y: -1 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -1163,7 +1360,7 @@ function ProjectModal({ project, onClose }) {
               }}>
               <X size={15} />
               <span>Close</span>
-            </button>
+            </motion.button>
           </div>
         </div>
       </motion.div>
@@ -1193,7 +1390,14 @@ function Projects() {
               className="project-card"
               key={project.name}
               variants={fadeUp}
-              transition={{ delay: index * 0.08 }}
+              whileHover={{
+                y: -9,
+                borderColor: "rgba(110, 231, 247, 0.4)",
+                boxShadow:
+                  "0 22px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(110, 231, 247, 0.12)",
+              }}
+              whileTap={{ scale: 0.985 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
               onClick={() => setActiveModalProject(project)}>
               <div className="project-image">
                 <img
@@ -1205,12 +1409,19 @@ function Projects() {
                   }}
                 />
                 <div className="project-number">0{index + 1}</div>
-                <div className="project-view-badge">
+                <motion.div
+                  className="project-view-badge"
+                  animate={{ opacity: [0.9, 1, 0.9] }}
+                  transition={{
+                    duration: 2.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}>
                   <span>
                     <Eye size={14} />
                     Click to Open Showcase Popup
                   </span>
-                </div>
+                </motion.div>
               </div>
 
               <div className="project-body">
@@ -1221,7 +1432,15 @@ function Projects() {
                 <p>{project.description}</p>
                 <div className="tag-row">
                   {project.tags.slice(0, 4).map((tag) => (
-                    <span key={tag}>{tag}</span>
+                    <motion.span
+                      key={tag}
+                      whileHover={{
+                        scale: 1.07,
+                        borderColor: "rgba(110, 231, 247, 0.5)",
+                      }}
+                      transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+                      {tag}
+                    </motion.span>
                   ))}
                   {project.tags.length > 4 && (
                     <span>+{project.tags.length - 4} more</span>
@@ -1231,24 +1450,37 @@ function Projects() {
                 <div
                   className="project-links"
                   onClick={(e) => e.stopPropagation()}>
-                  <button
+                  <motion.button
                     type="button"
                     className="project-preview-btn"
+                    whileHover={{ scale: 1.05, y: -1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 18 }}
                     onClick={() => setActiveModalProject(project)}>
                     <Sparkles size={14} />
                     <span>
                       Explore Showcase ({project.screenshots?.length || 1})
                     </span>
-                  </button>
+                  </motion.button>
                   {project.github && (
-                    <a href={project.github} target="_blank" rel="noreferrer">
+                    <motion.a
+                      href={project.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      whileHover={{ scale: 1.08, y: -1 }}
+                      whileTap={{ scale: 0.94 }}>
                       <Github size={15} /> Source
-                    </a>
+                    </motion.a>
                   )}
                   {project.demo && (
-                    <a href={project.demo} target="_blank" rel="noreferrer">
+                    <motion.a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noreferrer"
+                      whileHover={{ scale: 1.08, y: -1 }}
+                      whileTap={{ scale: 0.94 }}>
                       <ExternalLink size={15} /> Live demo
-                    </a>
+                    </motion.a>
                   )}
                 </div>
               </div>
@@ -1276,10 +1508,21 @@ function Education() {
       id="education"
       eyebrow="05 · Education"
       title="Education and foundation.">
-      <div className="education-card">
-        <div className="education-icon">
+      <motion.div
+        className="education-card"
+        variants={fadeUp}
+        whileHover={{
+          y: -4,
+          borderColor: "rgba(110, 231, 247, 0.35)",
+          boxShadow: "0 18px 45px rgba(0, 0, 0, 0.4)",
+        }}
+        transition={{ type: "spring", stiffness: 350, damping: 25 }}>
+        <motion.div
+          className="education-icon"
+          whileHover={{ rotate: [0, -10, 10, -5, 0], scale: 1.1 }}
+          transition={{ duration: 0.5 }}>
           <GraduationCap size={28} />
-        </div>
+        </motion.div>
         <div>
           <span className="eyebrow">Bachelor&apos;s Degree</span>
           <h3>{education.degree}</h3>
@@ -1291,7 +1534,7 @@ function Education() {
             </span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Section>
   );
 }
@@ -1317,46 +1560,65 @@ function Contact() {
       eyebrow="06 · Contact"
       title="Let's build something useful.">
       <div className="contact-grid">
-        <div className="contact-copy">
+        <motion.div variants={fadeUp} className="contact-copy">
           <p className="lead">
             Have a project, role, or idea you&apos;d like to discuss? Send a
             message and I&apos;ll get back to you.
           </p>
           <div className="contact-list">
-            <a href={`mailto:${profile.email}`}>
+            <motion.a
+              href={`mailto:${profile.email}`}
+              whileHover={{ x: 5, color: "var(--accent)" }}
+              transition={{ duration: 0.2 }}>
               <span>
                 <Mail size={18} />
               </span>
               {profile.email}
-            </a>
-            <a href={`tel:${profile.phone}`}>
+            </motion.a>
+            <motion.a
+              href={`tel:${profile.phone}`}
+              whileHover={{ x: 5, color: "var(--accent)" }}
+              transition={{ duration: 0.2 }}>
               <span>
                 <Phone size={18} />
               </span>
               {profile.phone}
-            </a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">
+            </motion.a>
+            <motion.a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              whileHover={{ x: 5, color: "var(--accent)" }}
+              transition={{ duration: 0.2 }}>
               <span>
                 <Linkedin size={18} />
               </span>
               LinkedIn
-            </a>
-            <a href={profile.github} target="_blank" rel="noreferrer">
+            </motion.a>
+            <motion.a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              whileHover={{ x: 5, color: "var(--accent)" }}
+              transition={{ duration: 0.2 }}>
               <span>
                 <Github size={18} />
               </span>
               GitHub
-            </a>
+            </motion.a>
           </div>
-          <a
+          <motion.a
             className="resume-link"
             href={profile.resume}
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}>
             <Download size={17} /> Download resume <ArrowUpRight size={15} />
-          </a>
-        </div>
-        <form className="contact-form" onSubmit={submit}>
+          </motion.a>
+        </motion.div>
+        <motion.form variants={fadeUp} className="contact-form" onSubmit={submit}>
           <label>
             Name
             <input
@@ -1385,15 +1647,20 @@ function Contact() {
               placeholder="Tell me a little about your project or opportunity..."
             />
           </label>
-          <button className="btn btn-primary submit-btn" type="submit">
+          <motion.button
+            className="btn btn-primary submit-btn"
+            type="submit"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}>
             <Send size={17} /> Send message
-          </button>
+          </motion.button>
           {sent && (
             <p className="form-note">
               Your email client should open with the message prepared.
             </p>
           )}
-        </form>
+        </motion.form>
       </div>
     </Section>
   );
@@ -1414,23 +1681,31 @@ function Footer() {
           <span>Software Developer · MERN Stack Developer</span>
         </div>
         <div className="footer-social">
-          <a
+          <motion.a
             href={profile.github}
             target="_blank"
             rel="noreferrer"
-            aria-label="GitHub">
+            aria-label="GitHub"
+            whileHover={{ scale: 1.15, y: -2 }}
+            whileTap={{ scale: 0.92 }}>
             <Github size={18} />
-          </a>
-          <a
+          </motion.a>
+          <motion.a
             href={profile.linkedin}
             target="_blank"
             rel="noreferrer"
-            aria-label="LinkedIn">
+            aria-label="LinkedIn"
+            whileHover={{ scale: 1.15, y: -2 }}
+            whileTap={{ scale: 0.92 }}>
             <Linkedin size={18} />
-          </a>
-          <a href={`mailto:${profile.email}`} aria-label="Email">
+          </motion.a>
+          <motion.a
+            href={`mailto:${profile.email}`}
+            aria-label="Email"
+            whileHover={{ scale: 1.15, y: -2 }}
+            whileTap={{ scale: 0.92 }}>
             <Mail size={18} />
-          </a>
+          </motion.a>
         </div>
         <p>© {new Date().getFullYear()} Mythili P. All rights reserved.</p>
       </div>
@@ -1440,9 +1715,12 @@ function Footer() {
             className="back-top"
             aria-label="Back to top"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}>
+            initial={{ opacity: 0, scale: 0.6, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.6, y: 15 }}
+            whileHover={{ scale: 1.14, y: -4 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ type: "spring", stiffness: 400, damping: 18 }}>
             <ArrowUp size={18} />
           </motion.button>
         )}
@@ -1453,6 +1731,12 @@ function Footer() {
 
 function App() {
   const [active, setActive] = useState("about");
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const ids = ["intro", ...navItems.map(([id]) => id)];
@@ -1474,6 +1758,10 @@ function App() {
 
   return (
     <>
+      <motion.div
+        className="scroll-progress-bar"
+        style={{ scaleX, transformOrigin: "0%" }}
+      />
       <Header active={active} />
       <main>
         <Hero />
