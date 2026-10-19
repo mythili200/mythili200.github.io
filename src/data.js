@@ -168,7 +168,6 @@ export const projects = [
       "Automated test coverage with Jest ESM test suites and responsive dark-mode architecture",
     ],
     github: "https://github.com/mythili200/subscription-dashboard-task",
-    demo: "http://localhost:5173",
   },
   {
     id: "boutique",

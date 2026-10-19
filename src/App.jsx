@@ -1396,9 +1396,7 @@ function Projects() {
                 boxShadow:
                   "0 22px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(110, 231, 247, 0.12)",
               }}
-              whileTap={{ scale: 0.985 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              onClick={() => setActiveModalProject(project)}>
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}>
               <div className="project-image">
                 <img
                   src={project.image}
@@ -1419,7 +1417,7 @@ function Projects() {
                   }}>
                   <span>
                     <Eye size={14} />
-                    Click to Open Showcase Popup
+                    Project preview
                   </span>
                 </motion.div>
               </div>

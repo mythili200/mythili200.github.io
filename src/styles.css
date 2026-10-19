@@ -264,3 +264,29 @@ button { border: 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
+
+/* Extra interaction and project-card polish */
+html { scroll-padding-top: 88px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.header { border-bottom-color: rgba(255,255,255,.06); }
+.hero { background: radial-gradient(ellipse at 78% 42%, rgba(110,231,247,.055), transparent 42%); }
+.section:nth-of-type(even) { background: linear-gradient(180deg, rgba(255,255,255,.012), transparent 70%); }
+.projects-grid { align-items: stretch; gap: 20px; }
+.project-card { display: flex; flex-direction: column; min-width: 0; }
+.project-image::after { content: ""; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(8,10,15,.55)); pointer-events: none; }
+.project-view-badge { position: absolute; left: 12px; bottom: 12px; z-index: 1; }
+.project-view-badge span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.14); border-radius: 8px; background: rgba(9,11,16,.78); color: var(--text); font-size: .7rem; backdrop-filter: blur(10px); }
+.project-body { display: flex; flex: 1; flex-direction: column; }
+.project-category { display: block; margin-bottom: 9px; color: var(--accent); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.project-body h3 { line-height: 1.35; }
+.project-body > p { flex: 1; line-height: 1.65; }
+.project-links { flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.project-links a, .project-preview-btn { min-height: 36px; }
+.project-preview-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 11px; border: 1px solid rgba(110,231,247,.22); border-radius: 8px; background: rgba(110,231,247,.07); color: var(--accent); font: inherit; font-size: .74rem; font-weight: 650; cursor: pointer; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.project-preview-btn:hover { background: rgba(110,231,247,.15); border-color: rgba(110,231,247,.48); }
+.contact-form, .experience-card, .education-card, .skill-group { box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+@media (max-width: 680px) {
+  .projects-grid { gap: 16px; }
+  .project-image { height: 220px; }
+  .project-body { padding: 19px; }
+}
